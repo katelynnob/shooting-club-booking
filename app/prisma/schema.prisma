@@ -1,0 +1,89 @@
+// Prisma schema — first migration, covering specs/01-accounts-and-ranges.md.
+// See ../GETTING_STARTED.md and ../SCOPE.md for project context.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// --- specs/01-accounts-and-ranges.md ---
+
+enum MemberStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  DEACTIVATED
+}
+
+enum AccountTokenPurpose {
+  INVITE // admin-created account, member sets their initial password
+  PASSWORD_RESET // self-service "forgot password"
+}
+
+model User {
+  id               String       @id @default(cuid())
+  email            String       @unique
+  passwordHash     String? // nullable — null means "invited but hasn't set a password yet"; never null once the account can log in at all. See spec 01, Behaviour: Admin-invited accounts.
+  name             String
+  membershipNumber String       @unique // required — the cross-reference key against the club's external membership sheet at approval time. See spec 01, Behaviour: Registration & Approval.
+  status           MemberStatus @default(PENDING)
+  isRso            Boolean      @default(false)
+  isAdmin          Boolean      @default(false)
+  isSuperAdmin     Boolean      @default(false) // exactly one row ever has this true — see spec 01, Behaviour: Super Admin
+  approvedByUserId String? // admin who approved this member (or who created/invited them directly) — audit trail
+  approvedAt       DateTime?
+  rejectedReason   String? // free text, admin-entered on reject — internal record only, never shown to the applicant
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  // Auth.js session strategy is JWT, not database-backed — Credentials provider
+  // doesn't reliably support Auth.js's "database" strategy (structural library
+  // limitation). sessionVersion is the revocation mechanism instead: incremented
+  // on deactivate/reactivate/password-reset, embedded in the JWT at login, and
+  // compared against this live value on every request via the `session`
+  // callback. A mismatch invalidates the session immediately. See spec 01's
+  // Data Model amendment note for the full reasoning. No Auth.js adapter is
+  // used as a consequence (Credentials-only, no OAuth, no database sessions) —
+  // so no Account/Session/VerificationToken tables either.
+  sessionVersion Int @default(0)
+
+  accountTokens AccountToken[]
+}
+
+model AccountToken {
+  id        String              @id @default(cuid())
+  userId    String
+  user      User                @relation(fields: [userId], references: [id])
+  purpose   AccountTokenPurpose
+  tokenHash String              @unique // raw token is emailed, only its hash is stored
+  expiresAt DateTime // INVITE: issued-at + 7 days; PASSWORD_RESET: issued-at + 1 hour
+  usedAt    DateTime?
+  createdAt DateTime            @default(now())
+}
+
+model Range {
+  id                String                @id @default(cuid())
+  name              String                @unique
+  discipline        String
+  capacity          Int
+  slotLengthMinutes Int                   @default(60)
+  archived          Boolean               @default(false)
+  createdAt         DateTime              @default(now())
+  updatedAt         DateTime              @updatedAt
+  operatingHours    RangeOperatingHours[]
+}
+
+model RangeOperatingHours {
+  id        String @id @default(cuid())
+  rangeId   String
+  range     Range  @relation(fields: [rangeId], references: [id])
+  dayOfWeek Int // 0 = Sunday .. 6 = Saturday
+  openTime  String // "11:00", stored as local club time (Europe/Dublin) — see SCOPE.md's DST edge case
+  closeTime String // "16:00"
+
+  @@unique([rangeId, dayOfWeek])
+}
