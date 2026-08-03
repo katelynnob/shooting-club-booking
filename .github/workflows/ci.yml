@@ -1,22 +1,15 @@
 name: Shooting Club Booking CI
 
-# Scoped to this project's subdirectory — this repo (a general sandbox) may
-# hold other unrelated work, and this workflow shouldn't run for changes
-# that don't touch it.
+# This repo is dedicated to this one project (app/, specs/, docker-compose.yml
+# all live at the repo root) — no path scoping needed.
 on:
   push:
     branches: [main]
-    paths:
-      - "shooting-club-booking/**"
-      - ".github/workflows/ci.yml"
   pull_request:
-    paths:
-      - "shooting-club-booking/**"
-      - ".github/workflows/ci.yml"
 
 defaults:
   run:
-    working-directory: shooting-club-booking/app
+    working-directory: app
 
 env:
   # db_test's port mapping from docker-compose.yml — same value whether this
@@ -35,13 +28,13 @@ jobs:
         with:
           node-version: 26
           cache: npm
-          cache-dependency-path: shooting-club-booking/app/package-lock.json
+          cache-dependency-path: app/package-lock.json
 
       - name: Install dependencies
         run: npm ci
 
       - name: Start db_test (Docker Compose)
-        working-directory: shooting-club-booking
+        working-directory: .
         run: docker compose up -d --wait db_test
 
       - name: Apply migrations to db_test
@@ -60,5 +53,5 @@ jobs:
 
       - name: Stop db_test
         if: always()
-        working-directory: shooting-club-booking
+        working-directory: .
         run: docker compose down -v
