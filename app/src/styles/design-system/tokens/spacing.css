@@ -1,0 +1,39 @@
+/* Spacing, radii and touch geometry. 4px base grid.
+   Tap targets: 48px is the floor for anything a member taps on a phone in a
+   car park; 40px is only allowed in admin tables on a pointer device. */
+:root {
+  --sp-1: 2px;
+  --sp-2: 4px;
+  --sp-3: 6px;
+  --sp-4: 8px;
+  --sp-5: 12px;
+  --sp-6: 16px;
+  --sp-7: 20px;
+  --sp-8: 24px;
+  --sp-9: 32px;
+  --sp-10: 40px;
+  --sp-11: 48px;
+  --sp-12: 64px;
+
+  /* Sharp corners — the system reads as a printed club form, not an app chrome */
+  --rx-sm: 2px;
+  --rx: 3px;
+  --rx-lg: 4px;
+  --rx-xl: 6px;
+  --rx-pill: 999px;
+
+  --tap-min: 48px;
+  --tap-lg: 56px;
+  --control-h: 48px;
+  --control-h-dense: 40px;
+  --control-pad-x: var(--sp-6);
+
+  --border-w: 1px;
+  --border-w-strong: 2px;
+
+  --gutter: var(--sp-6);
+  --stack: var(--sp-5);
+  --max-w-mobile: 480px;
+  --max-w-content: 720px;
+  --max-w-admin: 1200px;
+}

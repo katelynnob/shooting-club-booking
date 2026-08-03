@@ -1,3 +1,5 @@
+import { AuthShell } from "@/components/layout/AuthShell";
+import { InlineAlert } from "@/components/ui/feedback/InlineAlert";
 import { AcceptInviteForm } from "./AcceptInviteForm";
 
 export default async function AcceptInvitePage({
@@ -8,9 +10,8 @@ export default async function AcceptInvitePage({
   const { token } = await searchParams;
 
   return (
-    <main style={{ maxWidth: 360, margin: "4rem auto", fontFamily: "sans-serif" }}>
-      <h1>Activate your account</h1>
-      {token ? <AcceptInviteForm token={token} /> : <p style={{ color: "crimson" }}>Missing or invalid invite link.</p>}
-    </main>
+    <AuthShell title="Activate your account" intro="Set a password to activate your account and sign in.">
+      {token ? <AcceptInviteForm token={token} /> : <InlineAlert tone="danger">Missing or invalid invite link.</InlineAlert>}
+    </AuthShell>
   );
 }

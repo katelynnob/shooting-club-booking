@@ -277,7 +277,7 @@ Seed data:
 - Ad-hoc slot booking, blackout windows, courses & competitions (own specs, build on the `Range` model here).
 - Actual transactional email sending infrastructure (registration/approval/password-reset emails) — this spec creates the trigger *points* and content requirements, but the email-delivery mechanism itself (SMTP provider, templates, retry handling) is a shared piece likely worth its own small spec, since booking reminders will need it too.
 - **Rate limiting / brute-force protection on `/api/auth/*` — explicitly deferred**, not forgotten. Tracked in `../SCOPE.md`'s Pre-Launch Hardening Checklist so it resurfaces before go-live rather than being silently dropped.
-- Admin UI polish beyond functional CRUD — this spec is about correct behavior, not visual design.
+- Admin UI polish beyond functional CRUD — this spec is about correct behavior, not visual design. **Addressed since, outside this spec:** all of spec 01's screens were retrofitted onto the design system (see [../DESIGN_SYSTEM.md](../DESIGN_SYSTEM.md)) as a separate pass — that work isn't part of this spec's own acceptance criteria and didn't touch any endpoint/behavior, only presentation.
 - Any in-app mechanism to create, transfer, or remove Super Admin status — deliberately deployment-only, not a feature (see Data Model / Super Admin above).
 
 ---

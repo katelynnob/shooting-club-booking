@@ -1,26 +1,38 @@
 @import "tailwindcss";
 
+/* Harbour House design system tokens — source of truth for color, type and
+   spacing (see DESIGN_SYSTEM.md). Imported individually, in the design
+   system's own styles.css order, skipping tokens/fonts.css: that file's
+   Google Fonts CDN @import is replaced by next/font/google in layout.tsx
+   instead (see the override below) — a plain CSS @import for a remote
+   stylesheet doesn't survive Tailwind v4's Turbopack bundling. Turbopack's
+   CSS pipeline re-emits its own generated rules ahead of any @import that
+   appears later in the *source* file regardless of where you place it, so
+   there's no ordering fix on the CSS side — next/font (or any real npm
+   package import, like Phosphor's in layout.tsx) sidesteps the problem
+   entirely by becoming its own bundled chunk instead of a literal @import
+   in the final stylesheet. */
+@import "../styles/design-system/tokens/colors.css";
+@import "../styles/design-system/tokens/typography.css";
+@import "../styles/design-system/tokens/spacing.css";
+@import "../styles/design-system/tokens/elevation.css";
+@import "../styles/design-system/tokens/motion.css";
+@import "../styles/design-system/tokens/base.css";
+
+/* typography.css sets --font-sans/--font-mono to CDN-hosted font names as
+   literal strings. Layer the self-hosted next/font variables on top so the
+   *variable names* components already reference (var(--font-sans)) resolve
+   to the real, preloaded fonts — same fallback stack as the design system's
+   own tokens/typography.css, just fronted by the self-hosted font first. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --font-sans: var(--font-source-sans), "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-mono: var(--font-plex-mono), "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
+/* Maps Tailwind's own theme keys onto the design system's semantic tokens so
+   any Tailwind utility classes (bg-background, text-foreground) stay
+   consistent with the system. */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  --color-background: var(--page-bg);
+  --color-foreground: var(--text-strong);
 }

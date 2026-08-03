@@ -1,40 +1,43 @@
 "use client";
 
 import { useActionState } from "react";
-import Link from "next/link";
+import { AuthShell } from "@/components/layout/AuthShell";
+import { TextField } from "@/components/ui/forms/TextField";
+import { PasswordField } from "@/components/ui/forms/PasswordField";
+import { Button } from "@/components/ui/buttons/Button";
+import { ButtonLink } from "@/components/ui/buttons/ButtonLink";
+import { InlineAlert } from "@/components/ui/feedback/InlineAlert";
 import { loginAction } from "./actions";
 
 export default function LoginPage() {
   const [error, formAction, pending] = useActionState(loginAction, undefined);
 
   return (
-    <main style={{ maxWidth: 320, margin: "4rem auto", fontFamily: "sans-serif" }}>
-      <h1>Log in</h1>
-      <form action={formAction} style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-        <label>
-          Email
-          <input name="email" type="email" required autoComplete="email" style={{ display: "block", width: "100%" }} />
-        </label>
-        <label>
-          Password
-          <input
-            name="password"
-            type="password"
-            required
-            autoComplete="current-password"
-            style={{ display: "block", width: "100%" }}
-          />
-        </label>
-        {error && <p style={{ color: "crimson" }}>{error}</p>}
-        <button type="submit" disabled={pending}>
+    <AuthShell title="Harbour House range booking" intro="Sign in to book a range slot.">
+      <form action={formAction} style={{ display: "flex", flexDirection: "column", gap: "var(--sp-6)" }}>
+        {error && <InlineAlert tone="danger">{error}</InlineAlert>}
+        <TextField id="email" name="email" label="Email address" type="email" required autoComplete="email" />
+        <PasswordField id="password" name="password" required autoComplete="current-password" />
+        <Button type="submit" size="lg" fullWidth iconLeft="sign-in" loading={pending}>
           {pending ? "Logging in…" : "Log in"}
-        </button>
+        </Button>
+        <a href="/forgot-password" style={{ font: "var(--type-small)", textAlign: "center" }}>
+          Forgotten your password?
+        </a>
       </form>
-      <p style={{ marginTop: "1rem", fontSize: "0.9rem" }}>
-        <Link href="/forgot-password">Forgot password?</Link>
-        {" · "}
-        <Link href="/register">Register</Link>
-      </p>
-    </main>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "var(--sp-5)",
+          paddingTop: "var(--sp-6)",
+          borderTop: "var(--border-w) solid var(--border-hairline)",
+        }}
+      >
+        <ButtonLink href="/register" variant="secondary" size="lg" fullWidth iconLeft="user-plus">
+          Apply for a member account
+        </ButtonLink>
+      </div>
+    </AuthShell>
   );
 }

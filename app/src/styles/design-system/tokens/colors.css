@@ -1,0 +1,238 @@
+/* Harbour House Booking — colour system ("Range green" direction).
+   Base ramps first, semantic aliases second. Components consume the semantic
+   aliases only; never reach for a raw ramp value inside a component.
+
+   Safety rules baked into this palette:
+   1. Red is reserved for danger — no RSO coverage, blackout, destructive
+      actions, rejection. It is never brand or decorative.
+   2. Brand green (deep, desaturated forest) and positive green (brighter,
+      yellower) are deliberately different hues+chromas, because the brand
+      itself is green. Positive states always carry a check icon as well.
+   3. Nothing safety-relevant is signalled by colour alone. Coverage states add
+      an icon, and "no coverage" adds a diagonal stripe so it survives
+      greyscale and colour-vision deficiency. */
+:root {
+  /* Neutral ramp — cool green-grey paper */
+  --n-0: #ffffff;
+  --n-25: #f8f9f7;
+  --n-50: #f2f3f1;
+  --n-100: #e5e8e4;
+  --n-200: #d2d7d0;
+  --n-300: #b3bab1;
+  --n-400: #878e86;
+  --n-500: #636b62;
+  --n-600: #474e46;
+  --n-700: #333a32;
+  --n-800: #1f2420;
+  --n-900: #11150f;
+
+  /* Brand — range green. Primary actions, selection, focus, links. */
+  --brand-50: #eaf1eb;
+  --brand-100: #d5e3d8;
+  --brand-200: #a8c4ae;
+  --brand-300: #7fae86;
+  --brand-500: #2f5d3a;
+  --brand-600: #24462c;
+  --brand-700: #1a3421;
+
+  /* Positive — confirmed, approved, fully covered (brighter + yellower than brand) */
+  --ok-50: #e4f0e6;
+  --ok-100: #c6e2c9;
+  --ok-200: #9fce9f;
+  --ok-300: #6fb474;
+  --ok-500: #2b7a33;
+  --ok-600: #226428;
+  --ok-700: #1a4d1f;
+
+  /* Caution — pending, partial coverage, nearly full, cutoff approaching */
+  --warn-50: #fbf0d9;
+  --warn-100: #f5deae;
+  --warn-200: #e5c682;
+  --warn-300: #d1a54a;
+  --warn-500: #a5761a;
+  --warn-600: #855f14;
+  --warn-700: #6f5316;
+
+  /* Danger — no coverage, blackout, rejected, destructive */
+  --danger-50: #faeae8;
+  --danger-100: #f2cdc7;
+  --danger-200: #e4b4ad;
+  --danger-300: #d18b80;
+  --danger-500: #b1332a;
+  --danger-600: #96271f;
+  --danger-700: #7c211a;
+
+  /* ---- Semantic aliases ---- */
+  --page-bg: var(--n-50);
+  --surface-card: var(--n-0);
+  --surface-sunken: var(--n-100);
+  --surface-inverse: var(--n-900);
+  --surface-selected: var(--brand-50);
+
+  --text-strong: var(--n-900);
+  --text-body: var(--n-800);
+  --text-muted: var(--n-500);
+  --text-inverse: var(--n-0);
+  --text-link: var(--brand-500);
+  --text-link-hover: var(--brand-700);
+
+  --border-hairline: var(--n-100);
+  --border-default: var(--n-200);
+  --border-strong: var(--n-300);
+  --border-focus: var(--brand-500);
+
+  --action-primary-bg: var(--brand-500);
+  --action-primary-bg-hover: var(--brand-600);
+  --action-primary-bg-active: var(--brand-700);
+  --action-primary-fg: var(--n-0);
+  --action-secondary-bg: var(--n-0);
+  --action-secondary-bg-hover: var(--brand-50);
+  --action-secondary-fg: var(--brand-600);
+  --action-secondary-border: var(--brand-200);
+  --action-ghost-fg: var(--n-600);
+  --action-ghost-bg-hover: var(--n-100);
+  --action-danger-bg: var(--danger-500);
+  --action-danger-bg-hover: var(--danger-600);
+  --action-danger-fg: var(--n-0);
+  --action-danger-quiet-fg: var(--danger-700);
+  --action-danger-quiet-border: var(--danger-200);
+  --action-disabled-bg: var(--n-100);
+  --action-disabled-fg: var(--n-400);
+  --action-disabled-border: var(--n-200);
+
+  --focus-ring: var(--brand-500);
+
+  --field-bg: var(--n-0);
+  --field-border: var(--n-300);
+  --field-border-hover: var(--n-400);
+  --field-placeholder: var(--n-400);
+  --field-error-border: var(--danger-500);
+  --field-error-fg: var(--danger-700);
+  --field-error-bg: var(--danger-50);
+
+  /* Status — each pairs a fill, an edge and a foreground, and is always
+     rendered with its icon and text label. */
+  --status-pending-bg: var(--warn-50);
+  --status-pending-border: var(--warn-200);
+  --status-pending-fg: var(--warn-700);
+  --status-approved-bg: var(--ok-50);
+  --status-approved-border: var(--ok-200);
+  --status-approved-fg: var(--ok-700);
+  --status-confirmed-bg: var(--ok-50);
+  --status-confirmed-border: var(--ok-200);
+  --status-confirmed-fg: var(--ok-700);
+  --status-rejected-bg: var(--danger-50);
+  --status-rejected-border: var(--danger-200);
+  --status-rejected-fg: var(--danger-700);
+  --status-cancelled-bg: var(--n-50);
+  --status-cancelled-border: var(--n-200);
+  --status-cancelled-fg: var(--n-600);
+  --status-deactivated-bg: var(--n-50);
+  --status-deactivated-border: var(--n-200);
+  --status-deactivated-fg: var(--n-600);
+  --status-info-bg: var(--brand-50);
+  --status-info-border: var(--brand-200);
+  --status-info-fg: var(--brand-700);
+
+  /* Coverage — safety-relevant. Never colour alone. */
+  --coverage-full-bg: var(--ok-50);
+  --coverage-full-fg: var(--ok-700);
+  --coverage-partial-bg: var(--warn-50);
+  --coverage-partial-fg: var(--warn-700);
+  --coverage-none-bg: var(--danger-50);
+  --coverage-none-fg: var(--danger-700);
+  --coverage-closed-bg: var(--n-100);
+  --coverage-closed-fg: var(--n-500);
+  --coverage-none-stripe: repeating-linear-gradient(
+    -45deg,
+    transparent 0 5px,
+    rgba(124, 33, 26, 0.16) 5px 10px
+  );
+}
+
+/* Dark theme — same semantics, re-pointed. Set data-theme="dark" on <html>.
+   Tints are dark fills with light foregrounds; contrast targets are unchanged
+   (4.5:1 for text, 3:1 for the chip edges that carry meaning). */
+[data-theme="dark"] {
+  --page-bg: #151814;
+  --surface-card: #1e221d;
+  --surface-sunken: #262b25;
+  --surface-inverse: var(--n-25);
+  --surface-selected: #1d2c20;
+
+  --text-strong: #f4f6f3;
+  --text-body: #dfe3dd;
+  --text-muted: #a3aaa1;
+  --text-inverse: var(--n-900);
+  --text-link: var(--brand-300);
+  --text-link-hover: #a3cfa9;
+
+  --border-hairline: #2b312a;
+  --border-default: #3a423a;
+  --border-strong: #4d564c;
+  --border-focus: var(--brand-300);
+
+  --action-primary-bg: #3a7448;
+  --action-primary-bg-hover: #458654;
+  --action-primary-bg-active: #2f5d3a;
+  --action-primary-fg: #ffffff;
+  --action-secondary-bg: transparent;
+  --action-secondary-bg-hover: #1d2c20;
+  --action-secondary-fg: var(--brand-300);
+  --action-secondary-border: #3d5c44;
+  --action-ghost-fg: var(--text-muted);
+  --action-ghost-bg-hover: #262b25;
+  --action-danger-bg: #b83a30;
+  --action-danger-bg-hover: #c9463b;
+  --action-danger-quiet-fg: #e79a90;
+  --action-danger-quiet-border: #6d302a;
+  --action-disabled-bg: #262b25;
+  --action-disabled-fg: #6f776e;
+  --action-disabled-border: #3a423a;
+
+  --focus-ring: var(--brand-300);
+
+  --field-bg: #1a1e19;
+  --field-border: #4d564c;
+  --field-border-hover: #667065;
+  --field-placeholder: #7d857c;
+  --field-error-border: #d9756a;
+  --field-error-fg: #eda79d;
+  --field-error-bg: #2a1a18;
+
+  --status-pending-bg: #2a2213;
+  --status-pending-border: #6b5424;
+  --status-pending-fg: #e8c684;
+  --status-approved-bg: #16261a;
+  --status-approved-border: #35563a;
+  --status-approved-fg: #9ed4a5;
+  --status-confirmed-bg: #16261a;
+  --status-confirmed-border: #35563a;
+  --status-confirmed-fg: #9ed4a5;
+  --status-rejected-bg: #2a1a18;
+  --status-rejected-border: #6d302a;
+  --status-rejected-fg: #eda79d;
+  --status-cancelled-bg: #222621;
+  --status-cancelled-border: #3a423a;
+  --status-cancelled-fg: #b0b7ae;
+  --status-deactivated-bg: #222621;
+  --status-deactivated-border: #3a423a;
+  --status-deactivated-fg: #b0b7ae;
+  --status-info-bg: #1a2a1e;
+  --status-info-border: #3d5c44;
+  --status-info-fg: #a8ceae;
+
+  --coverage-full-bg: #16261a;
+  --coverage-full-fg: #9ed4a5;
+  --coverage-partial-bg: #2a2213;
+  --coverage-partial-fg: #e8c684;
+  --coverage-none-bg: #2a1a18;
+  --coverage-none-fg: #eda79d;
+  --coverage-closed-bg: #222621;
+  --coverage-closed-fg: #8b938a;
+  --coverage-none-stripe: repeating-linear-gradient(
+    -45deg,
+    transparent 0 5px,
+    rgba(237, 167, 157, 0.16) 5px 10px
+  );
+}

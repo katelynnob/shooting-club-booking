@@ -1,0 +1,40 @@
+/* Typography — Source Sans 3 for everything spoken, IBM Plex Mono for
+   everything counted (times, capacity, membership numbers). Mono numerals are
+   tabular so times align in a column and never jitter as capacity ticks down. */
+:root {
+  --font-sans: "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --fs-label: 0.75rem;   /* 12px — uppercase micro-labels only */
+  --fs-xs: 0.8125rem;    /* 13px — metadata, never body copy */
+  --fs-sm: 0.875rem;     /* 14px */
+  --fs-base: 1rem;       /* 16px — minimum for anything a member reads */
+  --fs-lg: 1.125rem;     /* 18px */
+  --fs-xl: 1.375rem;     /* 22px */
+  --fs-2xl: 1.75rem;     /* 28px */
+  --fs-3xl: 2.25rem;     /* 36px */
+
+  --lh-tight: 1.15;
+  --lh-snug: 1.3;
+  --lh-body: 1.55;
+
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+
+  --ls-label: 0.08em;
+  --ls-tight: -0.01em;
+
+  /* Composed roles */
+  --type-display: var(--fw-bold) var(--fs-3xl) / var(--lh-tight) var(--font-sans);
+  --type-h1: var(--fw-bold) var(--fs-2xl) / var(--lh-tight) var(--font-sans);
+  --type-h2: var(--fw-semibold) var(--fs-xl) / var(--lh-snug) var(--font-sans);
+  --type-h3: var(--fw-semibold) var(--fs-lg) / var(--lh-snug) var(--font-sans);
+  --type-body: var(--fw-regular) var(--fs-base) / var(--lh-body) var(--font-sans);
+  --type-body-strong: var(--fw-semibold) var(--fs-base) / var(--lh-body) var(--font-sans);
+  --type-small: var(--fw-regular) var(--fs-sm) / var(--lh-body) var(--font-sans);
+  --type-button: var(--fw-semibold) var(--fs-base) / 1 var(--font-sans);
+  --type-mono: var(--fw-medium) var(--fs-base) / var(--lh-snug) var(--font-mono);
+  --type-mono-sm: var(--fw-medium) var(--fs-sm) / var(--lh-snug) var(--font-mono);
+}
