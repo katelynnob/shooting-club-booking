@@ -1,0 +1,57 @@
+name: Shooting Club Booking CI
+
+# This repo is dedicated to this one project (app/, specs/, docker-compose.yml
+# all live at the repo root) — no path scoping needed.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+defaults:
+  run:
+    working-directory: app
+
+env:
+  # db_test's port mapping from docker-compose.yml — same value whether this
+  # runs in CI or on a developer's machine.
+  TEST_DATABASE_URL: postgresql://app:app@localhost:5433/shooting_club_booking_test
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 26
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Start db_test (Docker Compose)
+        working-directory: .
+        run: docker compose up -d --wait db_test
+
+      - name: Apply migrations to db_test
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ env.TEST_DATABASE_URL }}
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit tests (Vitest)
+        run: npm run test
+
+      - name: Integration tests (Vitest, against db_test)
+        run: npm run test:integration
+
+      - name: Stop db_test
+        if: always()
+        working-directory: .
+        run: docker compose down -v

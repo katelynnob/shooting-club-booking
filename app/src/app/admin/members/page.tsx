@@ -1,114 +1,50 @@
-import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { PUBLIC_USER_SELECT } from "@/lib/members-repo";
+import { InlineAlert } from "@/components/ui/feedback/InlineAlert";
 import { InviteForm } from "./InviteForm";
-import {
-  approveAction,
-  deactivateAction,
-  patchMemberAction,
-  reactivateAction,
-  rejectAction,
-  resendInviteAction,
-  setAdminAction,
-  setRsoAction,
-} from "./actions";
+import { MembersTable } from "./MembersTable";
 
 // specs/01-accounts-and-ranges.md, Behaviour: Admin member management.
-// Deliberately minimal — the spec's own "Out of Scope" section calls out
-// "Admin UI polish beyond functional CRUD" as not this spec's concern.
+// Auth/role gating lives in app/admin/layout.tsx; session is re-fetched here
+// only for the super-admin-only "Grant/Revoke Admin" distinction.
 export default async function AdminMembersPage() {
   const session = await auth();
-  if (!session?.user) redirect("/login");
-  if (!session.user.isAdmin && !session.user.isSuperAdmin) redirect("/dashboard");
-
   const members = await db.user.findMany({ select: PUBLIC_USER_SELECT, orderBy: { createdAt: "asc" } });
-  const isSuperAdmin = session.user.isSuperAdmin;
+  const pendingCount = members.filter((m) => m.status === "PENDING").length;
 
   return (
-    <main style={{ maxWidth: 1000, margin: "2rem auto", fontFamily: "sans-serif" }}>
-      <h1>Members</h1>
+    <div style={{ display: "flex", flexDirection: "column", gap: "var(--sp-7)" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "var(--sp-3)" }}>
+        <h1 style={{ font: "var(--type-h1)" }}>Members</h1>
+        <p style={{ font: "var(--type-small)", color: "var(--text-muted)" }}>
+          Approve applications by cross-checking the membership number against the club&apos;s records.
+        </p>
+      </div>
 
-      <h2 style={{ fontSize: "1rem" }}>Invite a new member directly</h2>
-      <InviteForm />
+      {pendingCount > 0 && (
+        <InlineAlert tone="warning" title={`${pendingCount} application${pendingCount === 1 ? "" : "s"} awaiting approval`}>
+          Applicants cannot book until an admin approves them. Rejection reasons are recorded internally and never shown to
+          the applicant.
+        </InlineAlert>
+      )}
 
-      <table style={{ width: "100%", marginTop: "2rem", borderCollapse: "collapse" }}>
-        <thead>
-          <tr style={{ textAlign: "left", borderBottom: "1px solid #ccc" }}>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Membership #</th>
-            <th>Status</th>
-            <th>Roles</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {members.map((member) => (
-            <tr key={member.id} style={{ borderBottom: "1px solid #eee" }}>
-              <td>{member.name}</td>
-              <td>{member.email}</td>
-              <td>{member.membershipNumber}</td>
-              <td>{member.status}</td>
-              <td>
-                {member.isSuperAdmin ? "Super Admin " : ""}
-                {member.isAdmin ? "Admin " : ""}
-                {member.isRso ? "RSO" : ""}
-              </td>
-              <td>
-                <div style={{ display: "flex", gap: "0.25rem", flexWrap: "wrap" }}>
-                  {member.status === "PENDING" && (
-                    <>
-                      <form action={approveAction}>
-                        <input type="hidden" name="id" value={member.id} />
-                        <button type="submit">Approve</button>
-                      </form>
-                      <form action={rejectAction}>
-                        <input type="hidden" name="id" value={member.id} />
-                        <button type="submit">Reject</button>
-                      </form>
-                    </>
-                  )}
-                  {member.status === "APPROVED" && !member.isSuperAdmin && member.id !== session.user.id && (
-                    <form action={deactivateAction}>
-                      <input type="hidden" name="id" value={member.id} />
-                      <button type="submit">Deactivate</button>
-                    </form>
-                  )}
-                  {member.status === "DEACTIVATED" && (
-                    <form action={reactivateAction}>
-                      <input type="hidden" name="id" value={member.id} />
-                      <button type="submit">Reactivate</button>
-                    </form>
-                  )}
-                  <form action={setRsoAction}>
-                    <input type="hidden" name="id" value={member.id} />
-                    <input type="hidden" name="isRso" value={(!member.isRso).toString()} />
-                    <button type="submit">{member.isRso ? "Revoke RSO" : "Grant RSO"}</button>
-                  </form>
-                  {isSuperAdmin && (
-                    <form action={setAdminAction}>
-                      <input type="hidden" name="id" value={member.id} />
-                      <input type="hidden" name="isAdmin" value={(!member.isAdmin).toString()} />
-                      <button type="submit">{member.isAdmin ? "Revoke Admin" : "Grant Admin"}</button>
-                    </form>
-                  )}
-                  <form action={resendInviteAction}>
-                    <input type="hidden" name="id" value={member.id} />
-                    <button type="submit">Resend invite</button>
-                  </form>
-                  <form action={patchMemberAction} style={{ display: "flex", gap: "0.25rem" }}>
-                    <input type="hidden" name="id" value={member.id} />
-                    <input name="name" defaultValue={member.name} style={{ width: 100 }} />
-                    <input name="membershipNumber" defaultValue={member.membershipNumber} style={{ width: 80 }} />
-                    <button type="submit">Save</button>
-                  </form>
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </main>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "var(--sp-5)",
+          background: "var(--surface-card)",
+          border: "var(--border-w) solid var(--border-default)",
+          borderRadius: "var(--rx)",
+          padding: "var(--sp-6)",
+        }}
+      >
+        <span className="hh-label">Invite a member directly</span>
+        <InviteForm />
+      </div>
+
+      <MembersTable members={members} isSuperAdmin={!!session?.user.isSuperAdmin} currentUserId={session!.user.id} />
+    </div>
   );
 }

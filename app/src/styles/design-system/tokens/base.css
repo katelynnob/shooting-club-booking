@@ -1,0 +1,31 @@
+/* Minimal global base. Consumers link styles.css and get these resets plus
+   sane link, focus and form-control defaults. No utility classes. */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--page-bg);
+  color: var(--text-body);
+  font: var(--type-body);
+  -webkit-font-smoothing: antialiased;
+  text-wrap: pretty;
+}
+h1, h2, h3, h4 { margin: 0; color: var(--text-strong); text-wrap: balance; }
+h1 { font: var(--type-h1); }
+h2 { font: var(--type-h2); }
+h3 { font: var(--type-h3); }
+p { margin: 0; }
+a { color: var(--text-link); text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px; }
+a:hover { color: var(--text-link-hover); text-decoration-thickness: 2px; }
+a:active { color: var(--brand-700); }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; border-radius: var(--rx-sm); }
+/* Times, capacity counts and membership numbers always use tabular figures. */
+.hh-num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+.hh-label { font-size: var(--fs-label); font-weight: var(--fw-semibold); letter-spacing: var(--ls-label); text-transform: uppercase; color: var(--text-muted); }
+.hh-visually-hidden { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@keyframes hh-spin { to { transform: rotate(360deg); } }
+@keyframes hh-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+@keyframes hh-toast-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }

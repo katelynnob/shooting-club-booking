@@ -1,3 +1,5 @@
+import { AuthShell } from "@/components/layout/AuthShell";
+import { InlineAlert } from "@/components/ui/feedback/InlineAlert";
 import { ResetPasswordForm } from "./ResetPasswordForm";
 
 // Next.js 16: searchParams is async — see GETTING_STARTED.md's note on
@@ -10,9 +12,8 @@ export default async function ResetPasswordPage({
   const { token } = await searchParams;
 
   return (
-    <main style={{ maxWidth: 360, margin: "4rem auto", fontFamily: "sans-serif" }}>
-      <h1>Reset password</h1>
-      {token ? <ResetPasswordForm token={token} /> : <p style={{ color: "crimson" }}>Missing or invalid reset link.</p>}
-    </main>
+    <AuthShell title="Reset password">
+      {token ? <ResetPasswordForm token={token} /> : <InlineAlert tone="danger">Missing or invalid reset link.</InlineAlert>}
+    </AuthShell>
   );
 }

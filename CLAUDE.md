@@ -1,0 +1,3 @@
+See [SCOPE.md](SCOPE.md), [specs/](specs/) and [GETTING_STARTED.md](GETTING_STARTED.md) for the project plan and build order.
+
+**Design system:** all UI work builds on [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md) — the ported tokens and component library in `app/src/components/ui/` and `app/src/styles/design-system/`. Every existing page has already been retrofitted onto it (not just the foundation) — see that doc's "Pages already retrofitted" section before touching any of them. No new inline styles or ad hoc colours/spacing; if a needed component doesn't exist yet, port it from the Claude Design project referenced there first.

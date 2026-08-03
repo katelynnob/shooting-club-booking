@@ -1,0 +1,20 @@
+/* Motion is functional only: state changes confirm a tap happened. Nothing
+   decorative, nothing that delays a booking confirmation. */
+:root {
+  --ease-out: cubic-bezier(0.2, 0.7, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-instant: 80ms;
+  --dur-fast: 120ms;
+  --dur: 180ms;
+  --dur-slow: 260ms;
+  --press-scale: 0.985;
+}
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-instant: 0ms;
+    --dur-fast: 0ms;
+    --dur: 0ms;
+    --dur-slow: 0ms;
+    --press-scale: 1;
+  }
+}
